@@ -1,12 +1,14 @@
 from flask import Flask
+from Password import RandomPassword as RP
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def index():
+    print(RP.generatePassword())
+    return 'OverSeer-Backend !!'
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
