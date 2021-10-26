@@ -4,7 +4,6 @@ import Login
 
 app = Flask(__name__)
 
-
 @app.route('/', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def index():
@@ -22,7 +21,6 @@ def login():
         return jsonify({'userid': UserId, 'login': True})
     else:
         abort(401)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
