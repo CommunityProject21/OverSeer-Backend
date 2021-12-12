@@ -46,7 +46,7 @@ def allergies():
     patient_allergies = Allergies.returnData(UserId)
     return jsonify(patient_allergies)
 
-
+  
 
 if __name__ == '__main__':
-    app.run(debug=True)
+   app.run(debug=True)
