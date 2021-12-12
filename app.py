@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, abort
 from flask_cors import CORS, cross_origin
 import Login
 import Details
+import Allergies
 
 app = Flask(__name__)
 
@@ -34,6 +35,17 @@ def details():
     if patient_data is None:
         patient_data = {"message": "No such Id"}
     return jsonify(patient_data)
+
+
+
+@app.route('/allergies', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def allergies():
+    json_data=request.get_json()
+    UserId=json_data['userid']
+    patient_allergies = Allergies.returnData(UserId)
+    return jsonify(patient_allergies)
+
 
 
 if __name__ == '__main__':
