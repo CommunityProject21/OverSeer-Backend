@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 import Login
 import Details
 import Allergies
+import Implants
 
 app = Flask(__name__)
 
@@ -37,15 +38,22 @@ def details():
     return jsonify(patient_data)
 
 
-
 @app.route('/allergies', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def allergies():
-    json_data=request.get_json()
-    UserId=json_data['userid']
+    json_data = request.get_json()
+    UserId = json_data['userid']
     patient_allergies = Allergies.returnData(UserId)
     return jsonify(patient_allergies)
 
+
+@app.route('/implants', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def implants():
+    json_data = request.get_json()
+    UserId = json_data['userid']
+    patient_implants = Implants.returnData(UserId)
+    return jsonify(patient_implants)
 
 
 if __name__ == '__main__':

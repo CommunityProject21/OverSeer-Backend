@@ -14,14 +14,14 @@ def returnData(patient_id):
     patient_allergies = importData()
     index = 0
     data = {}
-    found = 0
+    found = False
     for i in patient_allergies["PATIENT"]:
         if patient_id == i:
             data['Allergy' + str(len(data)+1)] = str(patient_allergies["DESCRIPTION"][index])
-            found = 1
+            found = True
         index = index + 1
 
-    if found == 0:
+    if found:
         return {"message": "No Allergies to Report for given ID."}
     else:
         data["message"] = "Take care of these while interacting with Patient"
