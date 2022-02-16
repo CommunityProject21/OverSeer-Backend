@@ -14,7 +14,7 @@ app = Flask(__name__)
 def handle_bad_request(e):
     return 'bad request!', 400
 
-
+  
 @app.route('/', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def index():
