@@ -4,6 +4,7 @@ import Login
 import Details
 import Allergies
 import Implants
+import Medications
 
 app = Flask(__name__)
 
@@ -54,6 +55,15 @@ def implants():
     UserId = json_data['userid']
     patient_implants = Implants.returnData(UserId)
     return jsonify(patient_implants)
+
+
+@app.route('/medications', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def medications():
+    json_data = request.get_json()
+    UserId = json_data['userid']
+    patient_medications = Medications.returnData(UserId)
+    return jsonify(patient_medications)
 
 
 if __name__ == '__main__':
