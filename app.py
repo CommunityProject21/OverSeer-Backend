@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, abort
+from werkzeug.exceptions import BadRequest
 from flask_cors import CORS, cross_origin
 import Login
+import LoginDoc
 import Details
 import Allergies
 import Implants
@@ -8,7 +10,11 @@ import Medications
 
 app = Flask(__name__)
 
+@app.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return 'bad request!', 400
 
+  
 @app.route('/', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def index():
@@ -19,11 +25,18 @@ def index():
 @cross_origin(supports_credentials=True)
 def login():
     json_data = request.get_json()
-    UserId = json_data['userid']
-    password = json_data['password']
-    verdict = Login.login(UserId, password)
+    if(json_data['userid'] and json_data['password'] and json_data['usertype'] ):
+        userId = json_data['userid']
+        password = json_data['password']
+        userType = json_data['usertype']
+    else:
+        handle_bad_request()
+    if(userType == 'P'):
+        verdict = Login.login(userId, password)
+    else:
+        verdict = LoginDoc.login(userId,password)
     if verdict:
-        return jsonify({'userid': UserId, 'login': True})
+        return jsonify({'userid': userId, 'login': True, 'usertype': userType})
     else:
         abort(401)
 
