@@ -109,5 +109,6 @@ def predictions():
         prediction=Prediction.predictDisease(Symptoms)
         return jsonify({"prediction":prediction})
 
+      
 if __name__ == '__main__':
     app.run(debug=True)
