@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify, abort
 from werkzeug.exceptions import BadRequest
 from flask_cors import CORS, cross_origin
+import numpy as np
 import Login
 import LoginDoc
 import Details
 import Allergies
 import Implants
 import Medications
+import Prediction
+from Training import symptom_info
 
 app = Flask(__name__)
 
@@ -45,7 +48,10 @@ def login():
 @cross_origin(supports_credentials=True)
 def details():
     json_data = request.get_json()
-    UserId = json_data['userid']
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
     patient_data = Details.returnData(UserId)
     if patient_data is None:
         patient_data = {"message": "No such Id"}
@@ -56,7 +62,10 @@ def details():
 @cross_origin(supports_credentials=True)
 def allergies():
     json_data = request.get_json()
-    UserId = json_data['userid']
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
     patient_allergies = Allergies.returnData(UserId)
     return jsonify(patient_allergies)
 
@@ -65,7 +74,10 @@ def allergies():
 @cross_origin(supports_credentials=True)
 def implants():
     json_data = request.get_json()
-    UserId = json_data['userid']
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
     patient_implants = Implants.returnData(UserId)
     return jsonify(patient_implants)
 
@@ -74,10 +86,28 @@ def implants():
 @cross_origin(supports_credentials=True)
 def medications():
     json_data = request.get_json()
-    UserId = json_data['userid']
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
     patient_medications = Medications.returnData(UserId)
     return jsonify(patient_medications)
 
+
+@app.route("/predictions", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
+def predictions():
+    if(request.method =='GET'):
+        Symptoms = symptom_info
+        return jsonify({"symptom-list":Symptoms})
+    if(request.method == 'POST'):
+        json_data = request.get_json()
+        if(json_data['symptoms']):
+            Symptoms = json_data['symptoms']
+        else:
+            handle_bad_request()
+        prediction=Prediction.predictDisease(Symptoms)
+        return jsonify({"prediction":prediction})
 
 if __name__ == '__main__':
     app.run(debug=True)
