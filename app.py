@@ -9,6 +9,7 @@ import Allergies
 import Implants
 import Medications
 import Prediction
+import Conditions
 from Training import symptom_info
 
 app = Flask(__name__)
@@ -109,6 +110,18 @@ def predictions():
         prediction=Prediction.predictDisease(Symptoms)
         return jsonify({"prediction":prediction})
 
+
+@app.route("/conditions", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
+def conditions():
+    json_data = request.get_json()
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
+    patient_conditions = Conditions.returnData(UserId)
+    return jsonify(patient_conditions)
+    
       
 if __name__ == '__main__':
     app.run(debug=True)
