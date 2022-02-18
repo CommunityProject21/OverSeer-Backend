@@ -10,6 +10,7 @@ import Implants
 import Medications
 import Prediction
 import Conditions
+import Observations
 from Training import symptom_info
 
 app = Flask(__name__)
@@ -121,7 +122,19 @@ def conditions():
         handle_bad_request()
     patient_conditions = Conditions.returnData(UserId)
     return jsonify(patient_conditions)
-    
+
+
+@app.route("/observations", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
+def observations():
+    json_data = request.get_json()
+    if(json_data['userid']):
+        UserId = json_data['userid']
+    else:
+        handle_bad_request()
+    patient_observations = Observations.returnData(UserId)
+    return jsonify(patient_observations)
       
+
 if __name__ == '__main__':
     app.run(debug=True)
