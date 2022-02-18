@@ -31,7 +31,6 @@ def returnData(patient_id):
         index = index + 1
 
     if found:
-        data["message"] = "Take care of these while interacting with Patient"
         return data
     else:
         return {"message": "No conditions to Report for given ID."}
