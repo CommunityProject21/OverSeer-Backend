@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify, abort
 from werkzeug.exceptions import BadRequest
 from flask_cors import CORS, cross_origin
+import jwt
+import datetime
+from functools import wraps
 import numpy as np
 import Login
 import LoginDoc
@@ -14,6 +17,29 @@ import Observations
 from Training import symptom_info
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'thisissecretone'
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({'message' : 'Token is missing!'}), 401
+
+        try: 
+            data = jwt.decode(token, app.config['SECRET_KEY'],['HS256'])
+            print(data['public_id'])
+            current_user = data['public_id']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message' : 'Token is invalid! / Expired'}), 401
+        return f(*args, **kwargs)
+    return decorated
+
 
 @app.errorhandler(BadRequest)
 def handle_bad_request(e):
@@ -41,12 +67,14 @@ def login():
     else:
         verdict = LoginDoc.login(userId,password)
     if verdict:
-        return jsonify({'userid': userId, 'login': True, 'usertype': userType})
+        token = jwt.encode({'public_id' : userId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
+        return jsonify({'userid': userId, 'login': True, 'usertype': userType, 'token' : token})
     else:
         abort(401)
 
 
 @app.route('/details', methods=['GET', 'POST'])
+@token_required
 @cross_origin(supports_credentials=True)
 def details():
     json_data = request.get_json()
@@ -61,6 +89,7 @@ def details():
 
 
 @app.route('/allergies', methods=['GET', 'POST'])
+@token_required
 @cross_origin(supports_credentials=True)
 def allergies():
     json_data = request.get_json()
@@ -73,6 +102,7 @@ def allergies():
 
 
 @app.route('/implants', methods=['GET', 'POST'])
+@token_required
 @cross_origin(supports_credentials=True)
 def implants():
     json_data = request.get_json()
@@ -85,6 +115,7 @@ def implants():
 
 
 @app.route('/medications', methods=['GET', 'POST'])
+@token_required
 @cross_origin(supports_credentials=True)
 def medications():
     json_data = request.get_json()
@@ -97,6 +128,7 @@ def medications():
 
 
 @app.route("/predictions", methods=["GET", "POST"])
+@token_required
 @cross_origin(supports_credentials=True)
 def predictions():
     if(request.method =='GET'):
@@ -108,11 +140,13 @@ def predictions():
             Symptoms = json_data['symptoms']
         else:
             handle_bad_request()
-        prediction=Prediction.predictDisease(Symptoms)
-        return jsonify({"prediction":prediction})
+        prediction_data=Prediction.predictDisease(Symptoms)
+        prediction=prediction_data.split("**")
+        return jsonify({"prediction":prediction[0], "recommendations":prediction[1]})
 
 
 @app.route("/conditions", methods=["GET", "POST"])
+@token_required
 @cross_origin(supports_credentials=True)
 def conditions():
     json_data = request.get_json()
@@ -125,6 +159,7 @@ def conditions():
 
 
 @app.route("/observations", methods=["GET", "POST"])
+@token_required
 @cross_origin(supports_credentials=True)
 def observations():
     json_data = request.get_json()
@@ -137,4 +172,4 @@ def observations():
       
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, use_debugger=False, use_reloader=True)
