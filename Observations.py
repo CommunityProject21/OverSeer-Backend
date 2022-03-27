@@ -21,7 +21,8 @@ def returnData(patient_id):
             found = True
             dates.append(patient_observations["DATE"][index][:10])
         index=index+1
-    
+
+    # dates.sort()
     for date in sorted(set(dates)):
         data["observation"].append({"date":date,"observations":{}})
     
