@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import pickle
 import numpy as np
-from Training import data_dict
+from Training import data_dict,ql, lt
 from statistics import mode
 
 
@@ -36,5 +36,10 @@ def predictDisease(symptoms):
     
     # making final prediction by taking mode of all predictions
     final_prediction = mode([rf_prediction, nb_prediction, svm_prediction])
-    return final_prediction
-
+    
+    idx = lt.index(final_prediction)
+    up = final_prediction
+    diett = ql[idx]
+    # return (up.upper(), diett)
+    return (f"{up.upper()}**{diett}")
+    
