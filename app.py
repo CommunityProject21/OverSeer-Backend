@@ -29,7 +29,7 @@ def token_required(f):
             token = request.headers['x-access-token']
 
         if not token:
-            return jsonify({'message' : 'Token is missing!'}), 401
+            return jsonify({'message' : 'Token is missing!'}), 403
 
         try: 
             data = jwt.decode(token, app.config['SECRET_KEY'],['HS256'])
@@ -38,7 +38,7 @@ def token_required(f):
         except jwt.ExpiredSignatureError:
             return jsonify({'message' : 'Token is Expired!'}), 401
         except:
-            return jsonify({'message' : 'Token is invalid!'}), 401
+            return jsonify({'message' : 'Token is invalid!'}), 402
         return f(*args, **kwargs)
     return decorated
 
