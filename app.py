@@ -77,7 +77,6 @@ def login():
 
 
 @app.route('/details', methods=['GET', 'POST', 'OPTIONS'])
-@token_required
 @cross_origin(supports_credentials=True)
 def details():
     json_data = request.get_json()
@@ -92,7 +91,6 @@ def details():
 
 
 @app.route('/allergies', methods=['GET', 'POST'])
-@token_required
 @cross_origin(supports_credentials=True)
 def allergies():
     json_data = request.get_json()
@@ -105,7 +103,6 @@ def allergies():
 
 
 @app.route('/implants', methods=['GET', 'POST'])
-@token_required
 @cross_origin(supports_credentials=True)
 def implants():
     json_data = request.get_json()
@@ -118,7 +115,6 @@ def implants():
 
 
 @app.route('/medications', methods=['GET', 'POST'])
-@token_required
 @cross_origin(supports_credentials=True)
 def medications():
     json_data = request.get_json()
@@ -148,7 +144,6 @@ def predictions():
 
 
 @app.route("/conditions", methods=["GET", "POST"])
-@token_required
 @cross_origin(supports_credentials=True)
 def conditions():
     json_data = request.get_json()
@@ -161,7 +156,6 @@ def conditions():
 
 
 @app.route("/observations", methods=["GET", "POST"])
-@token_required
 @cross_origin(supports_credentials=True)
 def observations():
     json_data = request.get_json()
