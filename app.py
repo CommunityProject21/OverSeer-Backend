@@ -75,7 +75,7 @@ def login():
         abort(401)
 
 
-@app.route('/details', methods=['GET', 'POST'])
+@app.route('/details', methods=['GET', 'POST', 'OPTIONS'])
 @token_required
 @cross_origin(supports_credentials=True, origin="*")
 def details():
