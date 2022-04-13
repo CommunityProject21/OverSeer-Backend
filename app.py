@@ -130,7 +130,6 @@ def medications():
 
 
 @app.route("/predictions", methods=["GET", "POST"])
-@token_required
 @cross_origin(supports_credentials=True)
 def predictions():
     if(request.method =='GET'):
