@@ -17,6 +17,7 @@ import Observations
 from Training import symptom_info
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SECRET_KEY'] = 'thisissecretone'
 
