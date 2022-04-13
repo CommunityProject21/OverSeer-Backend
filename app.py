@@ -17,7 +17,7 @@ import Observations
 from Training import symptom_info
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, support_credentials=True, origin="*")
 
 app.config['SECRET_KEY'] = 'thisissecretone'
 
@@ -78,7 +78,7 @@ def login():
 
 @app.route('/details', methods=['GET', 'POST', 'OPTIONS'])
 @token_required
-@cross_origin(supports_credentials=True, origin="*")
+@cross_origin(supports_credentials=True)
 def details():
     json_data = request.get_json()
     if(json_data['userid']):
