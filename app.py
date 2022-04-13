@@ -69,7 +69,7 @@ def login():
     else:
         verdict = LoginDoc.login(userId,password)
     if verdict:
-        token = jwt.encode({'public_id' : userId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
+        token = jwt.encode({'public_id' : userId, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
         return jsonify({'userid': userId, 'login': True, 'usertype': userType, 'token' : token})
     else:
         abort(401)
@@ -77,7 +77,7 @@ def login():
 
 @app.route('/details', methods=['GET', 'POST'])
 @token_required
-@cross_origin(supports_credentials=True)
+@cross_origin(supports_credentials=True, origin="*")
 def details():
     json_data = request.get_json()
     if(json_data['userid']):
