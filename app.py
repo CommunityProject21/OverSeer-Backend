@@ -24,7 +24,7 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        print(request.headers)
+        print(request.headers.["Access-Control-Request-Headers"])
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
         print("Token:" +str(token))
